@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nutri Maria Eduarda</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg-dark:#5f4a6f;
+      --bg-main:#7f6190;
+      --bg-soft:#9b86b0;
+      --shell-grad: linear-gradient(180deg,#7a5d89 0%, #9c89b3 100%);
+      --card-border:#dcc8b5;
+      --text:#161616;
+      --white:#ffffff;
+      --logo-bg:#f7f7f7;
+      --link-bg:rgba(160,137,181,.12);
+      --footer:#f3edf7;
+      --fruit-opacity:.16;
+      --shadow:0 20px 45px rgba(45,25,55,.22);
+    }
+
+    body.dark-mode{
+      --bg-dark:#0f0f12;
+      --bg-main:#17171d;
+      --bg-soft:#23232b;
+      --shell-grad: linear-gradient(180deg,#1b1b22 0%, #2a2a34 100%);
+      --card-border:#4a4052;
+      --text:#f3eef7;
+      --white:#ffffff;
+      --logo-bg:#f4f4f4;
+      --link-bg:rgba(255,255,255,.04);
+      --footer:#bdb2c7;
+      --fruit-opacity:.10;
+      --shadow:0 20px 45px rgba(0,0,0,.40);
+    }
+
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+    }
+
+    body{
+      font-family:'Inter',sans-serif;
+      min-height:100vh;
+      background:
+        radial-gradient(circle at top left, rgba(255,255,255,.10), transparent 20%),
+        radial-gradient(circle at bottom right, rgba(255,255,255,.08), transparent 18%),
+        linear-gradient(180deg, var(--bg-dark) 0%, var(--bg-main) 45%, var(--bg-soft) 100%);
+      color:var(--text);
+      overflow-x:hidden;
+      position:relative;
+      transition:background .25s ease, color .25s ease;
+    }
+
+    .bg-fruits{
+      position:fixed;
+      inset:0;
+      overflow:hidden;
+      pointer-events:none;
+      z-index:0;
+    }
+
+    .fruit{
+      position:absolute;
+      font-size:26px;
+      opacity:var(--fruit-opacity);
+      user-select:none;
+      transition:opacity .25s ease;
+    }
+
+    .fruit.f1{top:60px;left:8%}
+    .fruit.f2{top:140px;right:10%}
+    .fruit.f3{top:260px;left:14%}
+    .fruit.f4{top:360px;right:12%}
+    .fruit.f5{top:520px;left:7%}
+    .fruit.f6{top:660px;right:9%}
+    .fruit.f7{bottom:220px;left:12%}
+    .fruit.f8{bottom:160px;right:15%}
+    .fruit.f9{bottom:90px;left:20%}
+    .fruit.f10{bottom:100px;right:22%}
+
+    .page{
+      position:relative;
+      z-index:2;
+      min-height:100vh;
+      display:flex;
+      justify-content:center;
+      padding:12px 18px 24px;
+    }
+
+    .shell{
+      width:100%;
+      max-width:620px;
+      min-height:100vh;
+      background:var(--shell-grad);
+      border-radius:26px 26px 0 0;
+      box-shadow:var(--shadow);
+      border:1px solid rgba(255,255,255,.08);
+      padding:20px 22px 30px;
+      position:relative;
+      overflow:hidden;
+      transition:background .25s ease, box-shadow .25s ease;
+    }
+
+    .top-icons{
+      display:flex;
+      justify-content:flex-start;
+      margin-bottom:18px;
+    }
+
+    .icon-btn{
+      width:36px;
+      height:36px;
+      border:none;
+      border-radius:50%;
+      background:rgba(255,255,255,.90);
+      color:#121212;
+      display:grid;
+      place-items:center;
+      font-size:16px;
+      cursor:pointer;
+    }
+
+    .profile{
+      text-align:center;
+      padding-top:4px;
+    }
+
+    .avatar{
+      width:120px;
+      height:120px;
+      margin:0 auto 14px;
+      border-radius:50%;
+      overflow:hidden;
+      background:#fff;
+      border:3px solid rgba(255,255,255,.48);
+      box-shadow:0 10px 22px rgba(0,0,0,.18);
+    }
+
+    .avatar img{
+      width:100%;
+      height:100%;
+      display:block;
+      object-fit:cover;
+      object-position:center 18%;
+      image-rendering:auto;
+      filter:contrast(1.03) saturate(1.02) sharpness(1.02);
+    }
+
+    .profile h1{
+      font-size:19px;
+      font-weight:800;
+      color:var(--text);
+      margin-bottom:10px;
+    }
+
+    .profile p{
+      max-width:470px;
+      margin:0 auto 24px;
+      font-size:13px;
+      line-height:1.65;
+      font-weight:500;
+      color:var(--text);
+      opacity:.96;
+    }
+
+    .main-card{
+      border:1.5px solid var(--card-border);
+      border-radius:24px;
+      padding:12px;
+      background:rgba(148,118,165,.08);
+      margin-bottom:14px;
+      transition:border-color .25s ease, background .25s ease;
+    }
+
+    .logo-box{
+      background:var(--logo-bg);
+      border-radius:18px;
+      min-height:255px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:14px 18px;
+      overflow:hidden;
+    }
+
+    .logo-box img{
+      width:100%;
+      max-width:330px;
+      height:auto;
+      display:block;
+      object-fit:contain;
+      mix-blend-mode:multiply;
+    }
+
+    body.dark-mode .logo-box img{
+      mix-blend-mode:normal;
+    }
+
+    .main-link{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:16px 6px 4px;
+      text-decoration:none;
+      color:var(--text);
+      font-size:14px;
+      font-weight:500;
+      gap:10px;
+    }
+
+    .main-link .left-space,
+    .secondary-link .left-space{
+      width:18px;
+      flex-shrink:0;
+    }
+
+    .main-link .center,
+    .secondary-link .center{
+      flex:1;
+      text-align:center;
+    }
+
+    .dots{
+      width:18px;
+      text-align:right;
+      font-size:18px;
+      line-height:1;
+      color:var(--text);
+      opacity:.8;
+      flex-shrink:0;
+    }
+
+    .secondary-link{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      text-decoration:none;
+      color:var(--text);
+      border:1.5px solid var(--card-border);
+      border-radius:999px;
+      padding:16px 18px;
+      background:var(--link-bg);
+      font-size:14px;
+      font-weight:500;
+      margin-bottom:18px;
+      transition:border-color .25s ease, background .25s ease;
+    }
+
+    .cta-area{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:14px;
+      margin-top:10px;
+    }
+
+    .action-btn{
+      text-decoration:none;
+      text-align:center;
+      padding:15px 18px;
+      border-radius:999px;
+      font-weight:700;
+      font-size:15px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      background:#25D366;
+      color:#fff;
+      box-shadow:0 12px 26px rgba(37,211,102,.28);
+    }
+
+    .footer-note{
+      text-align:center;
+      font-size:11px;
+      color:var(--footer);
+      margin-top:22px;
+      font-weight:600;
+    }
+
+    .subtle-decor{
+      width:100%;
+      display:flex;
+      justify-content:center;
+      margin-top:10px;
+      margin-bottom:6px;
+    }
+
+    .subtle-line{
+      width:84px;
+      height:4px;
+      border-radius:999px;
+      background:rgba(255,255,255,.25);
+    }
+
+    @media (max-width:700px){
+      .page{
+        padding:0;
+      }
+
+      .shell{
+        max-width:100%;
+        min-height:100vh;
+        border-radius:0;
+        padding:16px 16px 24px;
+      }
+
+      .avatar{
+        width:112px;
+        height:112px;
+      }
+
+      .logo-box{
+        min-height:215px;
+        padding:12px 14px;
+      }
+
+      .logo-box img{
+        max-width:300px;
+      }
+
+      .profile p{
+        max-width:320px;
+      }
+
+      .main-link,
+      .secondary-link{
+        font-size:13px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-fruits" aria-hidden="true">
+    <div class="fruit f1">🍓</div>
+    <div class="fruit f2">🥑</div>
+    <div class="fruit f3">🍇</div>
+    <div class="fruit f4">🍋</div>
+    <div class="fruit f5">🥕</div>
+    <div class="fruit f6">🍎</div>
+    <div class="fruit f7">🥝</div>
+    <div class="fruit f8">🍐</div>
+    <div class="fruit f9">🍒</div>
+    <div class="fruit f10">🍊</div>
+  </div>
+
+  <main class="page">
+    <section class="shell">
+      <div class="top-icons">
+        <button class="icon-btn" id="themeToggle" aria-label="Alternar tema">✷</button>
+      </div>
+
+      <div class="profile">
+        <div class="avatar">
+          <img src="nutri.jpg" alt="Foto da Nutricionista Maria Eduarda">
+        </div>
+
+        <h1>Nutri.mariaeduarda</h1>
+
+        <p>
+          Quer melhorar sua alimentação, mas não sabe por onde começar?
+          🥗 Conte comigo para te orientar nesse processo de forma leve e personalizada.
+        </p>
+      </div>
+
+      <div class="main-card">
+        <div class="logo-box">
+          <img src="logo.png" alt="Logo Maria Eduarda Nutricionista">
+        </div>
+
+        <a
+          class="main-link"
+          href="https://wa.me/5511951524454?text=Olá,%20gostaria%20de%20agendar%20uma%20consulta."
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <span class="left-space"></span>
+          <span class="center">📅 Agende sua consulta</span>
+          <span class="dots">⋮</span>
+        </a>
+      </div>
+
+      <a
+        class="secondary-link"
+        href="mailto:nutrimariaeduardavficone@gmail.com?subject=Contato%20pelo%20site"
+      >
+        <span class="left-space"></span>
+        <span class="center">Envie um e-mail para Nutri Maria Eduarda</span>
+        <span class="dots">⋮</span>
+      </a>
+
+      <div class="cta-area">
+        <a
+          class="action-btn"
+          href="https://wa.me/5511951524454?text=Olá,%20gostaria%20de%20agendar%20uma%20consulta."
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          💬 Falar no WhatsApp
+        </a>
+      </div>
+
+      <div class="subtle-decor">
+        <div class="subtle-line"></div>
+      </div>
+
+      <div class="footer-note">
+        © <span id="year"></span> Maria Eduarda Nutricionista
+      </div>
+    </section>
+  </main>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    const body = document.body;
+    const themeToggle = document.getElementById("themeToggle");
+    const savedTheme = localStorage.getItem("maria-theme");
+
+    if (savedTheme === "dark") {
+      body.classList.add("dark-mode");
+      themeToggle.textContent = "☀";
+    } else {
+      themeToggle.textContent = "✷";
+    }
+
+    themeToggle.addEventListener("click", () => {
+      body.classList.toggle("dark-mode");
+
+      if (body.classList.contains("dark-mode")) {
+        localStorage.setItem("maria-theme", "dark");
+        themeToggle.textContent = "☀";
+      } else {
+        localStorage.setItem("maria-theme", "light");
+        themeToggle.textContent = "✷";
+      }
+    });
+  </script>
+</body>
+</html>
