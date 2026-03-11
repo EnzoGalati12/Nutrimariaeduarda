@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nutri Maria Eduarda</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg-dark:#5f4a6f;
+      --bg-main:#7f6190;
+      --bg-soft:#9b86b0;
+      --shell-grad: linear-gradient(180deg,#7a5d89 0%, #9c89b3 100%);
+      --card-border:#dcc8b5;
+      --text:#161616;
+      --logo-bg:#f6f6f6;
+      --link-bg:rgba(160,137,181,.12);
+      --footer:#f3edf7;
+      --fruit-opacity:.22;
+      --shadow:0 20px 45px rgba(45,25,55,.22);
+      --toggle-bg:rgba(255,255,255,.18);
+      --toggle-border:rgba(255,255,255,.25);
+      --toggle-icon:#ffffff;
+      --card-width:620px;
+    }
+
+    body.dark-mode{
+      --bg-dark:#0f0f12;
+      --bg-main:#17171d;
+      --bg-soft:#23232b;
+      --shell-grad: linear-gradient(180deg,#1b1b22 0%, #2a2a34 100%);
+      --card-border:#4a4052;
+      --text:#f3eef7;
+      --logo-bg:#f4f4f4;
+      --link-bg:rgba(255,255,255,.04);
+      --footer:#bdb2c7;
+      --fruit-opacity:.15;
+      --shadow:0 20px 45px rgba(0,0,0,.40);
+      --toggle-bg:rgba(255,255,255,.08);
+      --toggle-border:rgba(255,255,255,.14);
+      --toggle-icon:#ffffff;
+    }
+
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+    }
+
+    body{
+      font-family:'Inter',sans-serif;
+      min-height:100vh;
+      background:
+        radial-gradient(circle at top left, rgba(255,255,255,.10), transparent 20%),
+        radial-gradient(circle at bottom right, rgba(255,255,255,.08), transparent 18%),
+        linear-gradient(180deg, var(--bg-dark) 0%, var(--bg-main) 45%, var(--bg-soft) 100%);
+      color:var(--text);
+      overflow-x:hidden;
+      position:relative;
+      transition:background .25s ease, color .25s ease;
+    }
+
+    .bg-fruits{
+      position:fixed;
+      inset:0;
+      overflow:hidden;
+      pointer-events:none;
+      z-index:0;
+    }
+
+    .fruit{
+      position:absolute;
+      opacity:var(--fruit-opacity);
+      user-select:none;
+      transition:opacity .25s ease, transform .25s ease;
+      filter:drop-shadow(0 6px 16px rgba(0,0,0,.08));
+      animation:floatFruit 8s ease-in-out infinite;
+      line-height:1;
+    }
+
+    .fruit.small{ font-size:12px; }
+    .fruit.medium{ font-size:18px; }
+    .fruit.large{ font-size:24px; }
+
+    @keyframes floatFruit{
+      0%,100%{ transform:translateY(0px) rotate(0deg) scale(1); }
+      25%{ transform:translateY(-7px) rotate(3deg) scale(1.02); }
+      50%{ transform:translateY(-12px) rotate(-2deg) scale(1.04); }
+      75%{ transform:translateY(-6px) rotate(2deg) scale(1.01); }
+    }
+
+    /* cortina cheia de frutas */
+    .fruit-curtain{
+      position:fixed;
+      inset:0;
+      z-index:1000;
+      pointer-events:none;
+      overflow:hidden;
+      background:linear-gradient(180deg, rgba(124,95,141,.22), rgba(156,137,179,.22));
+    }
+
+    .curtain-side{
+      position:absolute;
+      top:0;
+      bottom:0;
+      width:50%;
+      display:grid;
+      grid-template-columns:repeat(5, 1fr);
+      grid-auto-rows:minmax(48px, 1fr);
+      gap:10px;
+      padding:14px;
+      align-items:center;
+      justify-items:center;
+      animation-duration:1.5s;
+      animation-timing-function:cubic-bezier(.77,0,.18,1);
+      animation-fill-mode:forwards;
+      backdrop-filter:blur(2px);
+    }
+
+    .curtain-left{
+      left:0;
+      animation-name:openLeft;
+      background:rgba(122,93,137,.18);
+    }
+
+    .curtain-right{
+      right:0;
+      animation-name:openRight;
+      background:rgba(122,93,137,.18);
+    }
+
+    .curtain-fruit{
+      font-size:clamp(26px, 3vw, 44px);
+      opacity:.97;
+      filter:drop-shadow(0 8px 14px rgba(0,0,0,.16));
+      line-height:1;
+    }
+
+    @keyframes openLeft{
+      0%{ transform:translateX(0); opacity:1; }
+      100%{ transform:translateX(-115%); opacity:0; }
+    }
+
+    @keyframes openRight{
+      0%{ transform:translateX(0); opacity:1; }
+      100%{ transform:translateX(115%); opacity:0; }
+    }
+
+    .page{
+      position:relative;
+      z-index:2;
+      min-height:100vh;
+      display:flex;
+      justify-content:center;
+      padding:12px 18px 24px;
+    }
+
+    .shell{
+      width:100%;
+      max-width:var(--card-width);
+      min-height:100vh;
+      background:var(--shell-grad);
+      border-radius:26px 26px 0 0;
+      box-shadow:var(--shadow);
+      border:1px solid rgba(255,255,255,.08);
+      padding:20px 22px 30px;
+      position:relative;
+      overflow:hidden;
+      transition:background .25s ease, box-shadow .25s ease;
+      backdrop-filter: blur(3px);
+    }
+
+    .shell::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        radial-gradient(circle at 15% 10%, rgba(255,255,255,.08), transparent 20%),
+        radial-gradient(circle at 90% 75%, rgba(255,255,255,.06), transparent 18%);
+      pointer-events:none;
+    }
+
+    .top-icons{
+      display:flex;
+      justify-content:flex-start;
+      margin-bottom:18px;
+      position:relative;
+      z-index:2;
+    }
+
+    .icon-btn{
+      width:40px;
+      height:40px;
+      border:none;
+      border-radius:50%;
+      background:var(--toggle-bg);
+      border:1px solid var(--toggle-border);
+      color:var(--toggle-icon);
+      display:grid;
+      place-items:center;
+      cursor:pointer;
+      backdrop-filter:blur(6px);
+      box-shadow:0 6px 18px rgba(0,0,0,.08);
+    }
+
+    .icon-btn svg{
+      width:18px;
+      height:18px;
+      stroke:currentColor;
+      fill:none;
+      stroke-width:2;
+      stroke-linecap:round;
+      stroke-linejoin:round;
+    }
+
+    .profile{
+      text-align:center;
+      padding-top:4px;
+      position:relative;
+      z-index:2;
+    }
+
+    .avatar{
+      width:128px;
+      height:128px;
+      margin:0 auto 14px;
+      border-radius:50%;
+      overflow:hidden;
+      background:#fff;
+      border:3px solid rgba(255,255,255,.48);
+      box-shadow:0 10px 22px rgba(0,0,0,.18);
+      cursor:pointer;
+      position:relative;
+      padding:0;
+    }
+
+    .avatar img{
+      width:100%;
+      height:100%;
+      display:block;
+      object-fit:cover;
+      object-position:center 18%;
+      border-radius:50%;
+    }
+
+    .profile h1{
+      font-size:19px;
+      font-weight:800;
+      color:var(--text);
+      margin-bottom:10px;
+    }
+
+    .profile p{
+      max-width:470px;
+      margin:0 auto 24px;
+      font-size:13px;
+      line-height:1.65;
+      font-weight:500;
+      color:var(--text);
+      opacity:.96;
+    }
+
+    .main-card{
+      border:1.5px solid var(--card-border);
+      border-radius:24px;
+      padding:14px;
+      background:rgba(148,118,165,.08);
+      margin-bottom:18px;
+      transition:border-color .25s ease, background .25s ease;
+      position:relative;
+      z-index:2;
+    }
+
+    .logo-box{
+      background:var(--logo-bg);
+      border-radius:20px;
+      min-height:240px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:10px 18px;
+      overflow:hidden;
+      position:relative;
+      isolation:isolate;
+    }
+
+    /* remove qualquer sensação de faixa/divisão */
+    .logo-box::before,
+    .logo-box::after{
+      content:none;
+    }
+
+    .logo-frame{
+      width:100%;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      position:relative;
+      z-index:1;
+      background:transparent;
+    }
+
+    .logo-box img{
+      width:100%;
+      max-width:235px;
+      height:auto;
+      display:block;
+      object-fit:contain;
+      mix-blend-mode:multiply;
+      filter:contrast(1.01) saturate(1.01);
+      opacity:.99;
+      background:transparent;
+    }
+
+    body.dark-mode .logo-box img{
+      mix-blend-mode:normal;
+      opacity:1;
+    }
+
+    .secondary-link{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      text-decoration:none;
+      color:var(--text);
+      border:1.5px solid var(--card-border);
+      border-radius:999px;
+      padding:16px 18px;
+      background:var(--link-bg);
+      font-size:14px;
+      font-weight:500;
+      margin-bottom:18px;
+      transition:border-color .25s ease, background .25s ease;
+      position:relative;
+      z-index:2;
+    }
+
+    .secondary-link .left-space{
+      width:18px;
+      flex-shrink:0;
+    }
+
+    .secondary-link .center{
+      flex:1;
+      text-align:center;
+    }
+
+    .dots{
+      width:18px;
+      text-align:right;
+      font-size:18px;
+      line-height:1;
+      color:var(--text);
+      opacity:.8;
+      flex-shrink:0;
+    }
+
+    .cta-area{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:14px;
+      margin-top:10px;
+      position:relative;
+      z-index:2;
+    }
+
+    .action-btn{
+      text-decoration:none;
+      text-align:center;
+      padding:15px 18px;
+      border-radius:999px;
+      font-weight:700;
+      font-size:15px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      background:#25D366;
+      color:#fff;
+      box-shadow:0 12px 26px rgba(37,211,102,.28);
+    }
+
+    .footer-note{
+      text-align:center;
+      font-size:11px;
+      color:var(--footer);
+      margin-top:22px;
+      font-weight:600;
+      position:relative;
+      z-index:2;
+    }
+
+    .photo-modal{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,.58);
+      backdrop-filter:blur(8px);
+      -webkit-backdrop-filter:blur(8px);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:20px;
+      z-index:999;
+      opacity:0;
+      visibility:hidden;
+      transition:opacity .22s ease, visibility .22s ease;
+    }
+
+    .photo-modal.active{
+      opacity:1;
+      visibility:visible;
+    }
+
+    .photo-modal-content{
+      position:relative;
+      width:min(82vw, 420px);
+      aspect-ratio:1/1;
+      border-radius:50%;
+      transform:scale(.90);
+      transition:transform .22s ease;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .photo-modal.active .photo-modal-content{
+      transform:scale(1);
+    }
+
+    .photo-modal-image-wrap{
+      width:100%;
+      height:100%;
+      border-radius:50%;
+      overflow:hidden;
+      border:6px solid rgba(255,255,255,.96);
+      box-shadow:0 24px 60px rgba(0,0,0,.35);
+      background:#fff;
+    }
+
+    .photo-modal img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      object-position:center 18%;
+      display:block;
+      border-radius:50%;
+    }
+
+    .photo-close{
+      position:absolute;
+      top:6px;
+      right:6px;
+      width:42px;
+      height:42px;
+      border:none;
+      border-radius:50%;
+      background:rgba(255,255,255,.96);
+      color:#111;
+      font-size:22px;
+      cursor:pointer;
+      box-shadow:0 10px 24px rgba(0,0,0,.18);
+      z-index:2;
+    }
+
+    @media (max-width:700px){
+      .page{
+        padding:0;
+      }
+
+      .shell{
+        max-width:100%;
+        min-height:100vh;
+        border-radius:0;
+        padding:16px 16px 24px;
+      }
+
+      .avatar{
+        width:118px;
+        height:118px;
+      }
+
+      .logo-box{
+        min-height:205px;
+        padding:10px 12px;
+      }
+
+      .logo-box img{
+        max-width:210px;
+      }
+
+      .profile p{
+        max-width:320px;
+      }
+
+      .secondary-link{
+        font-size:13px;
+      }
+
+      .curtain-side{
+        grid-template-columns:repeat(4, 1fr);
+        gap:8px;
+        padding:10px 6px;
+      }
+
+      .curtain-fruit{
+        font-size:28px;
+      }
+
+      .photo-modal-content{
+        width:min(86vw, 360px);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="fruit-curtain" id="fruitCurtain" aria-hidden="true">
+    <div class="curtain-side curtain-left" id="curtainLeft"></div>
+    <div class="curtain-side curtain-right" id="curtainRight"></div>
+  </div>
+
+  <div class="bg-fruits" id="bgFruits" aria-hidden="true"></div>
+
+  <main class="page">
+    <section class="shell">
+      <div class="top-icons">
+        <button class="icon-btn" id="themeToggle" aria-label="Alternar tema">
+          <span id="themeIcon"></span>
+        </button>
+      </div>
+
+      <div class="profile">
+        <button class="avatar" id="openPhoto" aria-label="Ampliar foto da nutricionista">
+          <img src="nutri.jpg" alt="Foto da Nutricionista Maria Eduarda">
+        </button>
+
+        <h1>Nutri.mariaeduarda</h1>
+
+        <p>
+          Quer melhorar sua alimentação, mas não sabe por onde começar?
+          🥗 Conte comigo para te orientar nesse processo de forma leve e personalizada.
+        </p>
+      </div>
+
+      <div class="main-card">
+        <div class="logo-box">
+          <div class="logo-frame">
+            <img src="logo.png" alt="Logo Maria Eduarda Nutricionista">
+          </div>
+        </div>
+      </div>
+
+      <a
+        class="secondary-link"
+        href="mailto:nutrimariaeduardavficone@gmail.com?subject=Contato%20pelo%20site"
+      >
+        <span class="left-space"></span>
+        <span class="center">Envie um e-mail para Nutri Maria Eduarda</span>
+        <span class="dots">⋮</span>
+      </a>
+
+      <div class="cta-area">
+        <a
+          class="action-btn"
+          href="https://wa.me/5511951524454?text=Olá,%20gostaria%20de%20agendar%20uma%20consulta."
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          💬 Falar no WhatsApp
+        </a>
+      </div>
+
+      <div class="footer-note">
+        © <span id="year"></span> Maria Eduarda Nutricionista
+      </div>
+    </section>
+  </main>
+
+  <div class="photo-modal" id="photoModal" aria-hidden="true">
+    <div class="photo-modal-content">
+      <button class="photo-close" id="closePhoto" aria-label="Fechar foto">×</button>
+      <div class="photo-modal-image-wrap">
+        <img src="nutri.jpg" alt="Foto ampliada da Nutricionista Maria Eduarda">
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    const body = document.body;
+    const themeToggle = document.getElementById("themeToggle");
+    const themeIcon = document.getElementById("themeIcon");
+    const savedTheme = localStorage.getItem("maria-theme");
+
+    const moonIcon = `
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M21 12.8A9 9 0 1 1 11.2 3A7 7 0 0 0 21 12.8z"></path>
+      </svg>
+    `;
+
+    const sunIcon = `
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="12" cy="12" r="4"></circle>
+        <path d="M12 2v2"></path>
+        <path d="M12 20v2"></path>
+        <path d="M4.93 4.93l1.41 1.41"></path>
+        <path d="M17.66 17.66l1.41 1.41"></path>
+        <path d="M2 12h2"></path>
+        <path d="M20 12h2"></path>
+        <path d="M4.93 19.07l1.41-1.41"></path>
+        <path d="M17.66 6.34l1.41-1.41"></path>
+      </svg>
+    `;
+
+    function updateThemeIcon() {
+      if (body.classList.contains("dark-mode")) {
+        themeIcon.innerHTML = sunIcon;
+      } else {
+        themeIcon.innerHTML = moonIcon;
+      }
+    }
+
+    if (savedTheme === "dark") {
+      body.classList.add("dark-mode");
+    }
+
+    updateThemeIcon();
+
+    themeToggle.addEventListener("click", () => {
+      body.classList.toggle("dark-mode");
+      localStorage.setItem(
+        "maria-theme",
+        body.classList.contains("dark-mode") ? "dark" : "light"
+      );
+      updateThemeIcon();
+    });
+
+    const openPhoto = document.getElementById("openPhoto");
+    const photoModal = document.getElementById("photoModal");
+    const closePhoto = document.getElementById("closePhoto");
+
+    function showModal() {
+      photoModal.classList.add("active");
+      photoModal.setAttribute("aria-hidden", "false");
+      document.body.style.overflow = "hidden";
+    }
+
+    function hideModal() {
+      photoModal.classList.remove("active");
+      photoModal.setAttribute("aria-hidden", "true");
+      document.body.style.overflow = "";
+    }
+
+    openPhoto.addEventListener("click", showModal);
+    closePhoto.addEventListener("click", hideModal);
+
+    photoModal.addEventListener("click", (e) => {
+      if (e.target === photoModal) hideModal();
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && photoModal.classList.contains("active")) {
+        hideModal();
+      }
+    });
+
+    // 100 frutas flutuantes
+    const bgFruits = document.getElementById("bgFruits");
+    const fruitPool = ["🍓","🥑","🍇","🍋","🥕","🍎","🥝","🍐","🍒","🍊","🍉","🫐","🍍","🍑","🍈","🍏","🥭"];
+    const sizes = ["small","medium","large"];
+
+    for (let i = 0; i < 100; i++) {
+      const span = document.createElement("span");
+      span.className = `fruit ${sizes[Math.floor(Math.random() * sizes.length)]}`;
+      span.textContent = fruitPool[Math.floor(Math.random() * fruitPool.length)];
+      span.style.left = `${Math.random() * 100}%`;
+      span.style.top = `${Math.random() * 100}%`;
+      span.style.animationDelay = `${(Math.random() * 4).toFixed(2)}s`;
+      span.style.animationDuration = `${6 + Math.random() * 4}s`;
+      bgFruits.appendChild(span);
+    }
+
+    // cortina cheia de frutas
+    const curtainLeft = document.getElementById("curtainLeft");
+    const curtainRight = document.getElementById("curtainRight");
+    const curtainPool = ["🍓","🥑","🍇","🍋","🥕","🍎","🥝","🍐","🍒","🍊","🍉","🫐","🍍","🍑","🍈","🍏","🥭"];
+
+    function fillCurtain(side, count) {
+      for (let i = 0; i < count; i++) {
+        const item = document.createElement("span");
+        item.className = "curtain-fruit";
+        item.textContent = curtainPool[Math.floor(Math.random() * curtainPool.length)];
+        side.appendChild(item);
+      }
+    }
+
+    fillCurtain(curtainLeft, 60);
+    fillCurtain(curtainRight, 60);
+
+    const curtain = document.getElementById("fruitCurtain");
+    setTimeout(() => {
+      curtain.style.display = "none";
+    }, 1700);
+  </script>
+</body>
+</html>
